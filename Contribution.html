@@ -3,6 +3,10 @@
 <head>
   <title>Contribution importante</title>
 </head>
+<meta charset="utf-8" />
+    <meta name="description" lang="fr" content="VeoLinking : Représentation graphique d'un diagramme circulaire, diagramme en secteur circulaire, camembert, histogramme avec l'élément CANVAS de l'API HTML 5." />
+    <meta name="keywords" lang="fr" content="VeoLinking, Technologies Web, nouvelles technologies web, CANVAS API, HTML 5, représentation graphique, statistique, série, diagramme circulaire, diagramme en secteur circulaire, camembert." />
+    <meta name="robots" content="index, follow, all" />
   <meta charset="utf-8">
   <script src="https://d3js.org/d3.v4.min.js"></script>
    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
@@ -63,6 +67,16 @@
       text-anchor: middle ;
     }
   </style>
+  <style type="text/css">
+      
+      .grid {
+        float:left;
+        width:500px;
+        margin:0 10px;
+        }
+      .grid h1 {font-size:25px;text-align:center;}
+      .grid p {text-align:left;}
+    </style>
 </head>
 <body>
  <div class="">
@@ -153,5 +167,73 @@
         });
     });
   </script>
+  <br>
+  <div class="grid" align="center">
+      <h1>Structure générale du commerce de la CEDEAO</h1>    
+      <canvas id="camembert" width="5000" height="400"></canvas>
+    </div>
+    <script>
+      function graphe_camembert() {
+      
+        var canvas = document.getElementById('camembert');
+        var context = canvas.getContext('2d');
+        
+        // donnees en pourcentage
+        var donnees = [66,1.2,0.9,1,4,2,0.7,2,22.2];
+        
+        var diametre = Math.min(canvas.height, canvas.width) - 100;
+        var rayon = diametre / 2;
+        
+        // position du centre du camembert
+        var position_x = rayon + 20;
+        var position_y = canvas.height / 2 + 20;
+        
+        var nb_donnees = donnees.length;
+        var angle_initial = 0;
+        var stylecolors = ['fuchsia', 'orange', 'tan', 'rgb(0,0,255)', 'rgb(0,255,0)', 'rgb(255,0,0)', 'brown', 'pink','gra'];
+        
+        var largeur_rect = 15;
+        var legendes = ['Combustibles','Cotons','Poissons et crustacés','Préparation alimentaires diverses','Ciment, chaux, souffre','Produits de navigation martime et fluviales','Tabacs et succédants de tabacs','Matieres plastiques et ouvrages en ces matiére','Autres produits'];
+        
+        for(var i=0;i<nb_donnees; i++) {
+          var angles_degre = (donnees[i] / 100) * 360;// conversion pourcentage -> angle en degré
+          DessinerAngle(context,position_x,position_y,rayon,angle_initial,angles_degre,stylecolors[i]);
+          angle_initial += angles_degre;
+          
+          DessinerRectangle(
+            context,
+            diametre + 30,
+            (largeur_rect + 3) * (i + 1),
+            largeur_rect,largeur_rect,
+            stylecolors[i]
+          );
+          context.font = '9pt Tahoma';//legendes
+          context.fillStyle = '#000';//legendes
+          context.fillText(legendes[i] + ', ' + donnees[i] +' %',diametre + 55,18 * i+30);//legendes
+        }
+        
+      }
+      // petit rectangle pour la légende
+      function DessinerRectangle(context,x0,y0,xl,yl,coloration) {
+        context.beginPath();
+        context.fillStyle = coloration;
+        context.fillRect(x0,y0,xl,yl);
+        context.closePath();
+        context.fill();
+      }
+      function DessinerAngle(context,position_x,position_y,rayon,angle_initial,angles_degre,couleurs) {
+        context.beginPath();
+        context.fillStyle  = couleurs;
+        var angle_initial_radian = angle_initial / (180 / Math.PI);// conversion angle en degré -> angle en radian
+        var angles_radian = angles_degre / (180 / Math.PI);// conversion angle en degré -> angle en radian
+        context.arc(position_x,position_y,rayon,angle_initial_radian,angle_initial_radian + angles_radian,0);
+        context.lineTo(position_x, position_y);
+        context.closePath();
+        context.fill();
+      }
+
+      window.addEventListener("load", graphe_camembert, false);
+            
+    </script>
 </body>
 </html>
